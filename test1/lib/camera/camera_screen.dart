@@ -1,6 +1,9 @@
+
+import 'package:audioplayers/audioplayers.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:test1/pages/first_screen.dart';
 import 'preview_screen.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -61,11 +64,14 @@ class _CameraScreenState extends State {
     }
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
+        title: Text("Take a photo"),
       ),
       body: Container(
         child: SafeArea(
@@ -208,6 +214,7 @@ class _CameraScreenState extends State {
 
   void _onCapturePressed(context) async {
     try {
+
       final path =
           join((await getTemporaryDirectory()).path, '${DateTime.now()}.png');
       await controller.takePicture(path);

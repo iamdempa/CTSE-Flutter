@@ -27,9 +27,22 @@ class _FirstScreenState extends State<FirstScreen> {
           ),
         ],
       ),
-      body: Center(
-        child: Text("Welcome to SnapNews - IT17157124"),
-
+      body: new ListView.builder(
+        itemCount: 10,
+        itemBuilder: (context, index) {
+          return new GestureDetector(
+            onTap: () {
+              print("tapped");
+            },
+            child: new Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: new Container(
+                color: Colors.grey,
+                height: 100.0,
+              ),
+            ),
+          );
+        },
       ),
       floatingActionButton: FloatingActionButton.extended(
         elevation: 4.0,

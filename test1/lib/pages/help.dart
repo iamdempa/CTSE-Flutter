@@ -12,20 +12,37 @@ class _HelpState extends State<Help> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Help - SnapNews"),
+        title: Text("Help - SnapNews",textAlign: TextAlign.center,),
+        
         backgroundColor: Colors.orange,
       ),
-      body: Container(
-        child: Row(
-          children: <Widget>[
-            Column(
-              children: [
-                Center(
-                  child: Text("Hi"),
-                )
-              ],
-            ),
-          ],
+      body: Center(
+        child: Container(
+          
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Container(
+                color: Colors.orange,
+                child: FlutterLogo(
+                  size: 60.0,
+                ),
+              ),
+              Container(
+                color: Colors.blue,
+                child: FlutterLogo(
+                  size: 60.0,
+                ),
+              ),
+              Container(
+                color: Colors.purple,
+                child: FlutterLogo(
+                  size: 60.0,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
