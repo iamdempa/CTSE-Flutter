@@ -28,6 +28,7 @@ class _FirstScreenState extends State<FirstScreen> {
       ),
       body: Center(
         child: Text("Welcome to SnapNews - IT17157124"),
+        
       ),
       floatingActionButton: FloatingActionButton.extended(
         elevation: 4.0,
