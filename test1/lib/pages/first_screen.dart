@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:test1/camera/camera_screen.dart';
+import 'package:test1/pages/help.dart';
 
 class FirstScreen extends StatefulWidget {
   FirstScreen({Key key}) : super(key: key);
@@ -21,14 +22,14 @@ class _FirstScreenState extends State<FirstScreen> {
             icon: Icon(Icons.help),
             onPressed: () {
               Navigator.push(
-                  context, MaterialPageRoute(builder: (_) => CameraScreen()));
+                  context, MaterialPageRoute(builder: (_) => Help()));
             },
           ),
         ],
       ),
       body: Center(
         child: Text("Welcome to SnapNews - IT17157124"),
-        
+
       ),
       floatingActionButton: FloatingActionButton.extended(
         elevation: 4.0,
