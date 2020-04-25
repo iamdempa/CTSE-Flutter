@@ -12,13 +12,15 @@ class AddNews extends StatefulWidget {
   _AddNewsState createState() => _AddNewsState();
 }
 
+
+
 class _AddNewsState extends State<AddNews> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Add News"),
-        backgroundColor: Colors.black,
+        title: Text("Report a News",),
+        backgroundColor: Colors.blueGrey,
       ),
       body: Builder(
         builder: (context) => Container(
@@ -32,17 +34,21 @@ class _AddNewsState extends State<AddNews> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Align(
-                    alignment: Alignment.center,
-                    child: ClipOval(
-                      
-                      child:Image.file(
-                      File(widget.imgPath),                      
-                      fit: BoxFit.cover,
-                      height: 200.0,
-                      width: 200.0,
-                    ),
-                    ),
-                  ),
+                      alignment: Alignment.center,
+                      child: GFImageOverlay(
+                        height: 200,
+                        width: 200,
+                        color: Colors.red,
+                        shape: BoxShape.circle,
+                        boxFit: BoxFit.fill,
+                        image: FileImage(File(widget.imgPath)),
+                      )),
+                ],
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  
                 ],
               ),
             ],

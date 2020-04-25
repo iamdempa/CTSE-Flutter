@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../Model/user.dart';
 import '../Controller/API.dart';
 import '../Model/news.dart';
 //import 'package:uuid/uuid.dart';

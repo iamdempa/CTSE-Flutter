@@ -1,11 +1,11 @@
 
-import 'package:audioplayers/audioplayers.dart';
+
 import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:snap_news_ctse_2020/banuka/pages/add_news.dart';
-import '../pages/first_screen.dart';
-import 'preview_screen.dart';
+
+
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
