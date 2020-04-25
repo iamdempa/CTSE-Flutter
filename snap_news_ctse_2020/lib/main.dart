@@ -7,6 +7,7 @@ import 'Widgets/ReporterNewsList.dart';
 import 'Widgets/ReporterEditNews.dart';
 import 'Controller/API.dart';
 
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
