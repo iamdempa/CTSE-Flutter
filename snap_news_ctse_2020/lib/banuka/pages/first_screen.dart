@@ -1,6 +1,15 @@
 import 'package:flutter/material.dart';
-import '../camera/camera_screen.dart';
+import 'package:snap_news_ctse_2020/banuka/api/firestore_service_api.dart';
+import 'package:snap_news_ctse_2020/banuka/model/news_model.dart';
+import './camera_screen.dart';
 import '../pages/help.dart';
+
+class Post {
+  final String title;
+  final String body;
+
+  Post(this.title, this.body);
+}
 
 class FirstScreen extends StatefulWidget {
   FirstScreen({Key key}) : super(key: key);
@@ -27,21 +36,23 @@ class _FirstScreenState extends State<FirstScreen> {
           ),
         ],
       ),
-      body: new ListView.builder(
-        itemCount: 10,
-        itemBuilder: (context, index) {
-          return new GestureDetector(
-            onTap: () {
-              print("tapped");
-            },
-            child: new Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: new Container(
-                color: Colors.grey,
-                height: 100.0,
-              ),
-            ),
-          );
+      body: StreamBuilder(
+        stream: FireStoreService().getNews(),
+        builder: (BuildContext context, AsyncSnapshot<List<News>> snapshot) {
+          if (snapshot.hasError || !snapshot.hasData) {
+            return CircularProgressIndicator();
+          } else {
+            return ListView.builder(
+              itemCount: snapshot.data.length,
+              itemBuilder: (BuildContext context, int index) {
+                News news = snapshot.data[index];
+                return ListTile(
+                  title: Text(news.headline),
+                );              
+              },
+              
+            );
+          }
         },
       ),
       floatingActionButton: FloatingActionButton.extended(

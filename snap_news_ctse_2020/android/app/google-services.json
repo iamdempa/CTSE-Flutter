@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "975259981345",
+    "firebase_url": "https://ctse-final-2020.firebaseio.com",
+    "project_id": "ctse-final-2020",
+    "storage_bucket": "ctse-final-2020.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:975259981345:android:da416185ccab789859f560",
+        "android_client_info": {
+          "package_name": "com.example.snap_news_ctse_2020"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "975259981345-4boibmikfggu6gquue9r1alg6u2361sk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDAVo0aAcBTg5wqlNm7PVjxNdx4Jcp-gNQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "975259981345-4boibmikfggu6gquue9r1alg6u2361sk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

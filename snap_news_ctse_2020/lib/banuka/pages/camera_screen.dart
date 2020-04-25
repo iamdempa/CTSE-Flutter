@@ -3,6 +3,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:snap_news_ctse_2020/banuka/pages/add_news.dart';
 import '../pages/first_screen.dart';
 import 'preview_screen.dart';
 import 'package:path/path.dart';
@@ -222,7 +223,7 @@ class _CameraScreenState extends State {
       Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => PreviewScreen(
+            builder: (context) => AddNews(
                   imgPath: path,
                 )),
       );
