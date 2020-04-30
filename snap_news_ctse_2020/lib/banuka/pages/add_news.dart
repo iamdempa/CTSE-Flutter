@@ -1,6 +1,8 @@
 // IT17157124 - This screen provides the facility to add/update the news depending on the
 // scenatio that if user has selected to add a news as anew or update an existing one
 
+
+// import the packages necessary 
 import 'dart:io';
 import 'package:dropdown_formfield/dropdown_formfield.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -14,6 +16,8 @@ import 'package:snap_news_ctse_2020/banuka/api/firestore_service_api.dart';
 import 'package:snap_news_ctse_2020/banuka/pages/camera_screen.dart';
 import 'package:snap_news_ctse_2020/banuka/pages/first_screen.dart';
 
+
+// AddNews class to perform add/or update of a News 
 class AddNews extends StatefulWidget {
   final String imgPath;
   News news;
@@ -26,8 +30,12 @@ class AddNews extends StatefulWidget {
 }
 
 class _AddNewsState extends State<AddNews> {
+
+  // global key to initialize the form field 
   GlobalKey<FormState> _key = GlobalKey<FormState>();
 
+  
+  // text editing controllers to update the state of values of different form fields 
   TextEditingController _headlineController;
   TextEditingController _descriptionController;
   String _dropDownActivity;
@@ -46,6 +54,7 @@ class _AddNewsState extends State<AddNews> {
   void initState() {
     super.initState();
 
+    // initialize the controller and other global varibales using 
     String headlineTakenFromWidget;
     String descriptiontakenFromWidget;
 
@@ -72,6 +81,8 @@ class _AddNewsState extends State<AddNews> {
     File _image;
     String image_url = "";
 
+
+    // get the photo taken by the camera as a FileImage 
     _getImage() {
       var img = (File(widget.imgPath));
       setState(() {
@@ -80,6 +91,8 @@ class _AddNewsState extends State<AddNews> {
       return FileImage(_image);
     }
 
+
+    // show a toast message as a confirmation on some events 
     Future _showToastMsg(String msgType, String msg) {
       if (msgType == "success") {
         return Fluttertoast.showToast(
@@ -111,6 +124,8 @@ class _AddNewsState extends State<AddNews> {
       }
     }
 
+
+    // show the loading screen when an async event takes place (eg: uploading the image)
     showLoadingWhileSaving(BuildContext context) {
       AlertDialog alert = AlertDialog(
         content: new Row(
@@ -133,11 +148,16 @@ class _AddNewsState extends State<AddNews> {
       );
     }
 
-    Future _uploadNews(BuildContext context, String operation) async {
-      String timestamp_ = new DateTime.now().millisecondsSinceEpoch.toString();
-      if (operation == "add") {
-        // add
 
+    // upload the news to the firestore 
+    Future _uploadNews(BuildContext context, String operation) async {
+
+      // get the current timestamp 
+      String timestamp_ = new DateTime.now().millisecondsSinceEpoch.toString();
+
+      // if an addition operation 
+      if (operation == "add") {
+        
         String fileName = basename(_image.path);
         StorageReference storageReference =
             FirebaseStorage.instance.ref().child(fileName);
@@ -153,6 +173,7 @@ class _AddNewsState extends State<AddNews> {
 
         Navigator.pop(context);
 
+        // add a new news
         await FireStoreServiceApi().add_news(News(
             headline: _headlineController.text.toUpperCase(),
             description: _descriptionController.text,
@@ -161,8 +182,10 @@ class _AddNewsState extends State<AddNews> {
             timeDate: formattedDate.toString(),
             priority: _dropDownActivity.toString(),
             timestamp: timestamp_));
-      } else if (operation == "update") {
-        print("update");
+            
+      } else if (operation == "update") { // if an updation operation 
+        
+        // get the value passed by the previous screen 
         if (widget.didRetake != null) {
           if (widget.didRetake.toLowerCase() == "yes") {
             String fileName = basename(_image.path);
@@ -199,6 +222,8 @@ class _AddNewsState extends State<AddNews> {
             print("Error in Add news 2");
           }
         } else {
+
+          // if it is a raw update, do this operatiton
           await FireStoreServiceApi().update_news(News(
             headline: _headlineController.text.toUpperCase(),
             description: _descriptionController.text,
@@ -222,6 +247,8 @@ class _AddNewsState extends State<AddNews> {
       });
     }
 
+
+    // show the headline TextFormatField to enter headline of the news
     Widget _showHeadlineField() {
       return TextFormField(
         textInputAction: TextInputAction.next,
@@ -243,6 +270,8 @@ class _AddNewsState extends State<AddNews> {
       );
     }
 
+
+    // show the description TextFormatField to enter description of the news
     Widget _showDescriptionField() {
       return TextFormField(
         focusNode: _descriptionNode,
@@ -263,6 +292,7 @@ class _AddNewsState extends State<AddNews> {
       );
     }
 
+    // show the dropdown TextFormatField to select the priority of the news
     Widget _showDropDownField() {
       return DropDownFormField(
         titleText: "Priority",
@@ -305,6 +335,7 @@ class _AddNewsState extends State<AddNews> {
       );
     }
 
+    // get the current date and time to store
     Widget _showDateAndTime() {
       return Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -368,6 +399,8 @@ class _AddNewsState extends State<AddNews> {
       );
     }
 
+
+    // show the note when clicked on either on date or time badge
     Widget _showTheNote() {
       return Align(
         alignment: Alignment.center,
@@ -381,6 +414,8 @@ class _AddNewsState extends State<AddNews> {
       );
     }
 
+
+    // show the save/or update button
     Widget _showSaveButton() {
       return Row(
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -424,6 +459,8 @@ class _AddNewsState extends State<AddNews> {
       );
     }
 
+
+    // show the image thumbnai, the photo user took
     Widget _showImageThumbnail(News news) {
       return Column(
         children: <Widget>[
@@ -496,27 +533,38 @@ class _AddNewsState extends State<AddNews> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
+
+                // call the function to show the image
                 _showImageThumbnail(widget.news),
                 SizedBox(
                   height: 30.0,
                 ),
+
+                // call the function to show the headline
                 _showHeadlineField(),
                 SizedBox(
                   height: 16.0,
                 ),
+                // call the function to show the description
                 _showDescriptionField(),
                 SizedBox(
                   height: 16.0,
                 ),
+                // call the function to show the dropdown field
                 _showDropDownField(),
                 SizedBox(
                   height: 16.0,
                 ),
+                // call the function to show the date and time
                 _showDateAndTime(),
+
+                // call the function to show the toast
                 _showTheNote(),
                 SizedBox(
                   height: 20.0,
                 ),
+
+                // call the function to show the save/update buttons
                 _showSaveButton(),
               ],
             ),

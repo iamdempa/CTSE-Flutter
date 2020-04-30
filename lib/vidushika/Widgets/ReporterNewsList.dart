@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../Model/news.dart';
 import '../Controller/API.dart';
 import 'ReporterEditNews.dart';
-
+import 'AddNews.dart';
 
 
 class ReporterNewsList extends StatefulWidget {
