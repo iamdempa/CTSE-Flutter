@@ -1,20 +1,24 @@
 
-
+// import the packages necessary 
 import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:snap_news_ctse_2020/banuka/pages/add_news.dart';
-
-
+import 'package:snap_news_ctse_2020/banuka/model/news_model.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
 class CameraScreen extends StatefulWidget {
+  News news;
+  String didRetake;
+
+  CameraScreen({Key key, this.news, this.didRetake}) : super(key: key);
+
   @override
   _CameraScreenState createState() => _CameraScreenState();
 }
 
-class _CameraScreenState extends State {
+class _CameraScreenState extends State<CameraScreen> {
   CameraController controller;
   List cameras;
   int selectedCameraIndex;
@@ -65,15 +69,18 @@ class _CameraScreenState extends State {
     }
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blue,
-        title: Text("Take a photo"),
-      ),
+          backgroundColor: (widget.news != null) ? Colors.orange : Colors.green,
+          centerTitle: true,
+          // title: Text((widget.news != null) ? "Retake the Photo" : "Take a photo"),
+          title: Text((widget.didRetake != null)
+              ? (widget.didRetake == "yes")
+                  ? "Updae the current photo"
+                  : "Retake the Photo"
+              : "Take a photo")),
       body: Container(
         child: SafeArea(
           child: Column(
@@ -89,7 +96,7 @@ class _CameraScreenState extends State {
                   height: 120,
                   width: double.infinity,
                   padding: EdgeInsets.all(15),
-                  color: Colors.blue,
+                  color: (widget.news != null) ? Colors.orange : Colors.green,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
@@ -138,7 +145,7 @@ class _CameraScreenState extends State {
             FloatingActionButton(
               child: Icon(
                 Icons.camera_enhance,
-                color: Colors.red,
+                color: (widget.news != null) ? Colors.orange : Colors.green,
               ),
               backgroundColor: Colors.white,
               onPressed: () {
@@ -151,17 +158,18 @@ class _CameraScreenState extends State {
     );
   }
 
-  _getName(CameraLensDirection lensDirection){
-      String name = lensDirection.toString().substring(lensDirection.toString().indexOf('.') + 1);
-      if(name.contains("back")){
-        return "Back";
-      }else if(name.contains("front")){
-        return "Front";
-      }else{
-        return name.toUpperCase();
-      }
+  _getName(CameraLensDirection lensDirection) {
+    String name = lensDirection
+        .toString()
+        .substring(lensDirection.toString().indexOf('.') + 1);
+    if (name.contains("back")) {
+      return "Back";
+    } else if (name.contains("front")) {
+      return "Front";
+    } else {
+      return name.toUpperCase();
     }
-
+  }
 
   /// Display a row of toggle to select the camera (or a message if no camera is available).
 
@@ -173,7 +181,6 @@ class _CameraScreenState extends State {
     CameraDescription selectedCamera = cameras[selectedCameraIndex];
     CameraLensDirection lensDirection = selectedCamera.lensDirection;
 
-    
     return Expanded(
       child: Align(
         alignment: Alignment.centerLeft,
@@ -185,11 +192,9 @@ class _CameraScreenState extends State {
             size: 24,
           ),
           label: Text(
-              _getName(lensDirection),
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w500
-              ),),
+            _getName(lensDirection),
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
+          ),
         ),
       ),
     );
@@ -215,18 +220,35 @@ class _CameraScreenState extends State {
 
   void _onCapturePressed(context) async {
     try {
-
       final path =
           join((await getTemporaryDirectory()).path, '${DateTime.now()}.png');
-      await controller.takePicture(path);
 
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => AddNews(
-                  imgPath: path,
-                )),
-      );
+      await controller.takePicture(path);
+      News news;
+
+      if (widget.didRetake != null) {
+        if (widget.didRetake == "yes") {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => AddNews(
+                      imgPath: path,
+                      news: widget.news,
+                      didRetake: "yes",
+                    )),
+          );
+        } else if (widget.didRetake == "no") {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => AddNews(imgPath: path)),
+          );
+        }
+      } else {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => AddNews(imgPath: path)),
+        );
+      }
     } catch (e) {
       _showCameraException(e);
     }

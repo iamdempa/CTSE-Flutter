@@ -21,6 +21,13 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
+  splashscreen: ^1.2.0
+  toast: ^0.1.5
+  sweetsheet: ^0.2.0
+  intl: ^0.16.1
+  dropdown_formfield: ^0.1.2
+  date_range_picker: ^1.0.5
+  fluttertoast: 4.0.1
   getflutter: ^1.0.11
   firebase_storage: 3.1.5
   flappy_search_bar: 1.4.1
@@ -54,9 +61,9 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
+  assets:
+    - images/default_news_image.png
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

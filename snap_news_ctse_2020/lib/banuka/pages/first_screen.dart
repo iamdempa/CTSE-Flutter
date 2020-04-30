@@ -1,10 +1,14 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+
+// import the packages necessary 
 import 'package:flutter/material.dart';
 import 'package:getflutter/getflutter.dart';
+import 'package:intl/intl.dart';
 import 'package:snap_news_ctse_2020/banuka/api/firestore_service_api.dart';
 import 'package:snap_news_ctse_2020/banuka/model/news_model.dart';
+import 'package:snap_news_ctse_2020/banuka/pages/view_a_particular_news.dart';
 import './camera_screen.dart';
 import '../pages/help.dart';
+import 'package:splashscreen/splashscreen.dart';
 
 class Post {
   final String title;
@@ -14,13 +18,15 @@ class Post {
 }
 
 class FirstScreen extends StatefulWidget {
-  FirstScreen({Key key}) : super(key: key);
+  News news;
+
+  FirstScreen({Key key, this.news}) : super(key: key);
 
   @override
   _FirstScreenState createState() => _FirstScreenState();
 }
 
-Widget _getAppBar(BuildContext context) {
+Widget _getAppBar(BuildContext context, News news) {
   return GFAppBar(
     centerTitle: true,
     backgroundColor: Colors.red,
@@ -33,7 +39,7 @@ Widget _getAppBar(BuildContext context) {
       onPressed: () {},
       type: GFButtonType.transparent,
     ),
-    title: Text("Add a News"),
+    title: Text("SnapNews"),
     actions: <Widget>[
       GFIconButton(
         icon: Icon(
@@ -53,23 +59,154 @@ Widget _progressIndicator() {
   return GFLoader(type: GFLoaderType.ios);
 }
 
-Widget _getTiles(String title, String subtitle) {
-  return GFListTile(
-      titleText: title,
-      subtitleText: subtitle,
-      icon: Icon(Icons.favorite));
+Widget _getTiles(BuildContext context, News news) {
+  var now = new DateTime.now();
+  var formatter = new DateFormat('yyyy-MM-dd');
+  String formattedDate = formatter.format(now);
+
+  dynamic currentTime = DateFormat.jm().format(DateTime.now());
+
+  String dateNew;
+  String timeNew;
+  String showDateAndTime;
+
+  if (news.timeDate == null) {
+    dateNew = formattedDate;
+  } else {
+    dateNew = news.timeDate;
+  }
+
+  if (news.timeNews == null) {
+    timeNew = currentTime;
+  } else {
+    timeNew = news.timeNews;
+  }
+
+  showDateAndTime = dateNew + " - " + timeNew;
+
+  String subtitleNew = "";
+
+  if (news.description.length <= 20) {
+    subtitleNew = news.description;
+  } else {
+    subtitleNew = news.description.substring(0, 60) + "...";
+  }
+
+  Color priorityBadgeColor;
+  String priorityNew;
+  String headlineNew;
+
+  if (news.headline.length <= 20) {
+    headlineNew = news.headline;
+  } else {
+    headlineNew = news.headline.substring(0, 20) + "...";
+  }
+
+  if (news.priority != null) {
+    priorityNew = news.priority;
+    if (news.priority.toLowerCase() == "high") {
+      priorityBadgeColor = Colors.red;
+      priorityNew = "H";
+    } else if (news.priority.toLowerCase() == "medium") {
+      priorityBadgeColor = Colors.orange;
+      priorityNew = "M";
+    } else if (news.priority.toLowerCase() == "low") {
+      priorityBadgeColor = Colors.green;
+      priorityNew = "L";
+    }
+  } else {
+    priorityBadgeColor = Colors.grey;
+    priorityNew = "N/A";
+  }
+
+  return GFCard(
+    boxFit: BoxFit.cover,
+    image:
+        (news.imageUrl == null || news.imageUrl.isEmpty || news.imageUrl == "")
+            ? Image.asset(
+                "images/default_news_image.png",
+                height: 200.0,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              )
+            : Image.network(news.imageUrl,
+                height: 200.0, width: double.infinity, fit: BoxFit.cover),
+    title: GFListTile(
+      title: Align(
+        alignment: Alignment.center,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              headlineNew.toUpperCase(),
+              style: TextStyle(color: Colors.black, fontSize: 20.0),
+            ),
+            SizedBox(
+              width: 10.0,
+            ),
+          ],
+        ),
+      ),
+      subTitle: Align(
+        alignment: Alignment.center,
+        child: Center(
+          child: Text(
+            "\n" + subtitleNew,
+            style: TextStyle(color: Colors.grey),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ),
+    ),
+    content: Align(
+      alignment: Alignment.center,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(
+            showDateAndTime,
+            style: TextStyle(color: Colors.grey),
+          ),
+          SizedBox(
+            width: 10.0,
+          ),
+          GFBadge(
+            color: priorityBadgeColor,
+            text: priorityNew,
+            size: GFSize.SMALL,
+          ),
+        ],
+      ),
+    ),
+    buttonBar: GFButtonBar(
+      alignment: WrapAlignment.center,
+      children: <Widget>[
+        GFButton(
+          onPressed: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (_) => ViewParticularNews(news: news)));
+          },
+          icon: Icon(
+            Icons.more,
+            color: Colors.white,
+            size: 14.0,
+          ),
+          text: 'Read More',
+        )
+      ],
+    ),
+  );
 }
 
 Widget _showSearchBar(BuildContext context) {
-  List list = [
-    "Banuka",
-    "Banuka",
-    "Banuka",
-  ];
+  var banuka = [];
 
   return GFSearchBar(
     // overlaySearchListHeight: 160.0,
-    searchList: list,
+    searchList: banuka,
     searchQueryBuilder: (query, list) {
       return list
           .where((item) => item.toLowerCase().contains(query.toLowerCase()))
@@ -92,13 +229,18 @@ class _FirstScreenState extends State<FirstScreen> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: _getAppBar(context),
+      appBar: _getAppBar(context, widget.news),
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           _showSearchBar(context),
+          SizedBox(
+            height: 20.0,
+          ),
           Expanded(
               child: StreamBuilder(
-            stream: FireStoreService().getNews(),
+            stream: FireStoreServiceApi().getNews(),
             builder:
                 (BuildContext context, AsyncSnapshot<List<News>> snapshot) {
               if (snapshot.hasError || !snapshot.hasData) {
@@ -108,12 +250,12 @@ class _FirstScreenState extends State<FirstScreen> {
                   itemCount: snapshot.data.length,
                   itemBuilder: (BuildContext context, int index) {
                     News news = snapshot.data[index];
-                    return _getTiles(news.headline, news.description);
+                    return _getTiles(context, news);
                   },
                 );
               }
             },
-          ))
+          )),
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
