@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:snap_news_ctse_2020/banuka/pages/first_screen.dart';
 
 
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {

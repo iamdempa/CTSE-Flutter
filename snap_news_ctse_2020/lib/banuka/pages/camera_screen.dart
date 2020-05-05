@@ -223,9 +223,9 @@ class _CameraScreenState extends State<CameraScreen> {
   IconData _getCameraLensIcon(CameraLensDirection direction) {
     switch (direction) {
       case CameraLensDirection.back:
-        return CupertinoIcons.switch_camera;
+        return Icons.camera_rear;
       case CameraLensDirection.front:
-        return CupertinoIcons.switch_camera_solid;
+        return Icons.camera_front;
       case CameraLensDirection.external:
         return Icons.camera;
       default:

@@ -21,7 +21,7 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
-  splashscreen: ^1.2.0
+  
   toast: ^0.1.5
   sweetsheet: ^0.2.0
   intl: ^0.16.1
@@ -39,6 +39,12 @@ dependencies:
   cloud_firestore:
   flutter:
     sdk: flutter
+
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "images/default_news_image.png"    
 
 
   # The following adds the Cupertino Icons font to your application.

@@ -1,5 +1,4 @@
-
-// import the packages necessary 
+// import the packages necessary
 import 'package:flutter/material.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:intl/intl.dart';
@@ -8,14 +7,7 @@ import 'package:snap_news_ctse_2020/banuka/model/news_model.dart';
 import 'package:snap_news_ctse_2020/banuka/pages/view_a_particular_news.dart';
 import './camera_screen.dart';
 import '../pages/help.dart';
-import 'package:splashscreen/splashscreen.dart';
 
-class Post {
-  final String title;
-  final String body;
-
-  Post(this.title, this.body);
-}
 
 class FirstScreen extends StatefulWidget {
   News news;
@@ -227,6 +219,12 @@ Widget _showSearchBar(BuildContext context) {
 
 class _FirstScreenState extends State<FirstScreen> {
   @override
+  void initState() {
+    super.initState();
+    new Future.delayed(const Duration(seconds: 4));
+  }
+
+  @override
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: _getAppBar(context, widget.news),
@@ -290,3 +288,5 @@ class _FirstScreenState extends State<FirstScreen> {
     );
   }
 }
+
+
