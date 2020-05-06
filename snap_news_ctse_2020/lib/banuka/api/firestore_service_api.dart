@@ -1,3 +1,9 @@
+// ====================================================================================
+// IT17157124 - FireStore API
+// This is the API that perform CRUD operations
+// Reference: https://www.youtube.com/watch?v=-blxq_RLybQ
+// ====================================================================================
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:snap_news_ctse_2020/banuka/model/news_model.dart';
 
