@@ -1,5 +1,8 @@
 
 // IT17157124 - News model class 
+// This is the model class that makes the abstraction between API and the Firestore
+// Reference: https://www.youtube.com/watch?v=-blxq_RLybQ
+
 class News {
   final String headline;
   final String description;

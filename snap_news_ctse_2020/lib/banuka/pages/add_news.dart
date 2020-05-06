@@ -1,6 +1,7 @@
+// ====================================================================================
 // IT17157124 - This screen provides the facility to add/update the news depending on the
 // scenatio that if user has selected to add a news as anew or update an existing one
-
+// ====================================================================================
 
 // import the packages necessary 
 import 'dart:io';
@@ -66,6 +67,8 @@ class _AddNewsState extends State<AddNews> {
       descriptiontakenFromWidget = "";
     }
 
+
+    // initialaze the handlers
     _headlineController = TextEditingController(text: headlineTakenFromWidget);
     _descriptionController =
         TextEditingController(text: descriptiontakenFromWidget);
@@ -74,6 +77,8 @@ class _AddNewsState extends State<AddNews> {
     _priorityNode = FocusNode();
   }
 
+
+  // a boolean value to verify if the image has been changed
   bool change = false;
 
   @override
@@ -157,17 +162,23 @@ class _AddNewsState extends State<AddNews> {
 
       // if an addition operation 
       if (operation == "add") {
-        
+      
+        // get the file name
         String fileName = basename(_image.path);
+
+        // get the storage reference
         StorageReference storageReference =
             FirebaseStorage.instance.ref().child(fileName);
 
+      // store the image in firestore storage
         StorageUploadTask storageUploadTask = storageReference.putFile(_image);
 
+        // show the loading dialog
         showLoadingWhileSaving(context);
         StorageTaskSnapshot storageTaskSnapshot =
             await storageUploadTask.onComplete;
 
+        // get the saved image url in firestore storage to store in firestore databse
         image_url =
             await (await storageUploadTask.onComplete).ref.getDownloadURL();
 
@@ -188,22 +199,30 @@ class _AddNewsState extends State<AddNews> {
         // get the value passed by the previous screen 
         if (widget.didRetake != null) {
           if (widget.didRetake.toLowerCase() == "yes") {
+
+            // get the file name
             String fileName = basename(_image.path);
+
+            // get the storage reference
             StorageReference storageReference =
                 FirebaseStorage.instance.ref().child(fileName);
 
+            // store the image in firestore storage
             StorageUploadTask storageUploadTask =
                 storageReference.putFile(_image);
 
+            // show the loading dialog
             showLoadingWhileSaving(context);
             StorageTaskSnapshot storageTaskSnapshot =
                 await storageUploadTask.onComplete;
 
+            // get the saved image url in firestore storage to store in firestore databse
             image_url =
                 await (await storageUploadTask.onComplete).ref.getDownloadURL();
 
             Navigator.pop(context);
 
+            // upate the selected news
             await FireStoreServiceApi().update_news(News(
                 headline: _headlineController.text.toUpperCase(),
                 description: _descriptionController.text,
@@ -296,6 +315,7 @@ class _AddNewsState extends State<AddNews> {
     Widget _showDropDownField() {
       return DropDownFormField(
         titleText: "Priority",
+        // check if user has clicked to edit a news
         value: (widget.news != null && change == false)
             ? widget.news.priority
             : _dropDownActivity,
@@ -427,6 +447,8 @@ class _AddNewsState extends State<AddNews> {
             textColor: Colors.white,
             label: Text("Cancel"),
             onPressed: () async {
+
+              // route to the FirstScreen if pressed "Cancel"
               Navigator.push(
                   context, MaterialPageRoute(builder: (_) => FirstScreen()));
             },
@@ -436,14 +458,20 @@ class _AddNewsState extends State<AddNews> {
                 (widget.news != null) ? Icons.cloud_upload : Icons.add_a_photo),
             color: (widget.news != null) ? Colors.orange : Colors.green,
             textColor: Colors.white,
+
+            // label value depending on the update/add
             label: Text((widget.news != null) ? "Update" : "Snap"),
             onPressed: () async {
               try {
+
                 // first upload the photo
                 if (_key.currentState.validate()) {
                   if (widget.news != null) {
+                    // update an existing news
                     await _uploadNews(context, "update");
                   } else {
+
+                    // add a news
                     await _uploadNews(context, "add");
                   }
 
@@ -451,6 +479,7 @@ class _AddNewsState extends State<AddNews> {
                       MaterialPageRoute(builder: (_) => FirstScreen()));
                 }
               } catch (e) {
+                // print if any exceptions are thrown
                 print(e);
               }
             },
@@ -517,6 +546,8 @@ class _AddNewsState extends State<AddNews> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
+
+        // title depending on user selection -add or update
         title: Text(
           (widget.news != null)
               ? "Update - " + widget.news.headline

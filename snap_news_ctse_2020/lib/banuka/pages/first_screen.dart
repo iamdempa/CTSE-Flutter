@@ -1,4 +1,10 @@
+// ====================================================================================
+// IT17157124 - The very first screen the user will be seen once the app is launched.
+// reference: https://api.flutter.dev/flutter/widgets/ListView-class.html
+// ====================================================================================
+
 // import the packages necessary
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:getflutter/getflutter.dart';
 import 'package:intl/intl.dart';
@@ -9,15 +15,22 @@ import './camera_screen.dart';
 import '../pages/help.dart';
 
 
+// The class defition
 class FirstScreen extends StatefulWidget {
+
+  // News object declaration
   News news;
 
-  FirstScreen({Key key, this.news}) : super(key: key);
+  FirstScreen({
+    Key key,
+    this.news,
+  }) : super(key: key);
 
   @override
   _FirstScreenState createState() => _FirstScreenState();
 }
 
+// get the AppBar value of the Scaffold's
 Widget _getAppBar(BuildContext context, News news) {
   return GFAppBar(
     centerTitle: true,
@@ -47,10 +60,14 @@ Widget _getAppBar(BuildContext context, News news) {
   );
 }
 
+
+// return the progress indicator if any network issue found
 Widget _progressIndicator() {
   return GFLoader(type: GFLoaderType.ios);
 }
 
+
+// show the retrieved data from firestore as a List view
 Widget _getTiles(BuildContext context, News news) {
   var now = new DateTime.now();
   var formatter = new DateFormat('yyyy-MM-dd');
@@ -78,9 +95,10 @@ Widget _getTiles(BuildContext context, News news) {
 
   String subtitleNew = "";
 
-  if (news.description.length <= 20) {
+
+  if (news.description.length <= 60) {
     subtitleNew = news.description;
-  } else {
+  } else if(news.description.length > 60){
     subtitleNew = news.description.substring(0, 60) + "...";
   }
 
@@ -193,46 +211,91 @@ Widget _getTiles(BuildContext context, News news) {
   );
 }
 
-Widget _showSearchBar(BuildContext context) {
-  var banuka = [];
 
-  return GFSearchBar(
-    // overlaySearchListHeight: 160.0,
-    searchList: banuka,
-    searchQueryBuilder: (query, list) {
-      return list
-          .where((item) => item.toLowerCase().contains(query.toLowerCase()))
-          .toList();
-    },
-    overlaySearchListItemBuilder: (item) {
-      return Container(
-        padding: const EdgeInsets.all(3),
-        child: Text(
-          item,
-          style: const TextStyle(fontSize: 18),
-        ),
-      );
-    },
-    onItemSelected: (item) {},
-  );
+// return values from firestore and show them when typing on the search bar
+Future<List> getNewsOnSearchBar() async {
+
+  // collection name
+  final String _collection = 'news';
+
+  // firestore instance
+  final Firestore _fireStore = Firestore.instance;
+  var newsList = [];
+
+  // retrieve data
+  Future<QuerySnapshot> getData() async {
+    return await _fireStore.collection(_collection).getDocuments();
+  }
+
+  // call the method
+  QuerySnapshot val = await getData();
+  if (val.documents.length > 0) {
+    for (int i = 0; i < val.documents.length; i++) {
+      // filter out the headline field
+      newsList.add(val.documents[i].data["headline"]);
+    }
+  } else {
+    print("Not Found");
+  }
+
+  // return as a list
+  return newsList;
 }
 
+
 class _FirstScreenState extends State<FirstScreen> {
+
+  // variables and controllers declaration
+  List<String> items;
+  TextEditingController controller = new TextEditingController();
+  String filter;
+
   @override
   void initState() {
     super.initState();
     new Future.delayed(const Duration(seconds: 4));
+
+    // for search bar filters
+    controller.addListener(() {
+      setState(() {
+        filter = controller.text;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    // dispose the controller 
+    controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
+      // call the appbar 
       appBar: _getAppBar(context, widget.news),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          _showSearchBar(context),
+          // show the search bar
+          Padding(
+            padding: EdgeInsets.fromLTRB(25, 10, 25, 5),
+            child: new TextField(
+              textCapitalization: TextCapitalization.characters,
+              decoration: InputDecoration(
+                labelText: "Search news",
+                prefixIcon: Icon(Icons.search),
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(50.0),
+                    ),
+                    borderSide: BorderSide(color: Colors.blue, width: 5.0)),
+              ),
+              controller: controller,
+            ),
+          ),
           SizedBox(
             height: 20.0,
           ),
@@ -241,14 +304,26 @@ class _FirstScreenState extends State<FirstScreen> {
             stream: FireStoreServiceApi().getNews(),
             builder:
                 (BuildContext context, AsyncSnapshot<List<News>> snapshot) {
+
+                  // if any erros occured
               if (snapshot.hasError || !snapshot.hasData) {
+                // show the loading progress bar
                 return _progressIndicator();
-              } else {
+              } else { // otherwse show the result/s
                 return ListView.builder(
                   itemCount: snapshot.data.length,
                   itemBuilder: (BuildContext context, int index) {
                     News news = snapshot.data[index];
-                    return _getTiles(context, news);
+                    return (filter == null)
+                        ? new Card(
+                            child: _getTiles(context, news),
+                          )
+                        : news.headline.contains(filter)
+                            ? new Card(
+                                child: _getTiles(context, news),
+                              )
+                            : new Text("");
+                    // return _getTiles(context, news);
                   },
                 );
               }
@@ -256,6 +331,8 @@ class _FirstScreenState extends State<FirstScreen> {
           )),
         ],
       ),
+
+      // floating action button for snaping the news
       floatingActionButton: FloatingActionButton.extended(
         elevation: 4.0,
         icon: const Icon(Icons.camera_enhance),
@@ -288,5 +365,3 @@ class _FirstScreenState extends State<FirstScreen> {
     );
   }
 }
-
-

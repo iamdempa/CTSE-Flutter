@@ -1,7 +1,10 @@
+// ====================================================================================
+// IT 17157124 - This is the 101 that helps new users to learn how to operate 
+// the application
+// ====================================================================================
 
 // import the packages necessary 
 import 'package:flutter/material.dart';
-import 'package:getflutter/components/button/gf_button_bar.dart';
 import 'package:getflutter/getflutter.dart';
 
 class Help extends StatefulWidget {
@@ -11,7 +14,10 @@ class Help extends StatefulWidget {
   _HelpState createState() => _HelpState();
 }
 
+// shwow the guide lines in a card
 Widget _getCard() {
+
+  // retutn the cards with new steps
   return Center(
       child: GFCard(
     title: GFListTile(
@@ -41,6 +47,7 @@ class _HelpState extends State<Help> {
       ),
       body: Center(
         child: Container(
+          // call the card to show the guide lines
           child: _getCard(),
         ),
       ),

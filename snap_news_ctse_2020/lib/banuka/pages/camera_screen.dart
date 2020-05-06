@@ -1,4 +1,7 @@
+// ====================================================================================
 // IT17157124 - This screen provides the facility to take a photo using the camera
+// reference: https://www.youtube.com/watch?v=_nS00ZKnINQ&t=193s
+// ====================================================================================
 
 // import the packages necessary 
 import 'package:camera/camera.dart';
@@ -284,6 +287,8 @@ class _CameraScreenState extends State<CameraScreen> {
     // get the index of the currently selected camera 
     selectedCameraIndex =
         selectedCameraIndex < cameras.length - 1 ? selectedCameraIndex + 1 : 0;
+
+    // get the camera description    
     CameraDescription selectedCamera = cameras[selectedCameraIndex];
     _initCameraController(selectedCamera);
   }

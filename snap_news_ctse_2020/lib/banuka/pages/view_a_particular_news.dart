@@ -1,3 +1,8 @@
+// ====================================================================================
+// IT17157124 - Get a particular news when "Read More" button is clicked. This will be
+// the naviagated screen if a user wants to see a news particularly. 
+// reference: https://www.youtube.com/watch?v=-blxq_RLybQ
+// ====================================================================================
 
 // import the packages necessary 
 import 'package:flutter/material.dart';
@@ -10,9 +15,14 @@ import 'package:snap_news_ctse_2020/banuka/pages/first_screen.dart';
 import 'package:sweetsheet/sweetsheet.dart';
 import 'package:toast/toast.dart';
 
+
+// class definition
 class ViewParticularNews extends StatefulWidget {
+
+  // get the news object from the FirstScereen
   final News news;
 
+  // initialize the constructor and the variable/s
   ViewParticularNews({Key key, this.news}) : super(key: key);
 
   @override
@@ -20,6 +30,8 @@ class ViewParticularNews extends StatefulWidget {
 }
 
 class _ViewParticularNewsState extends State<ViewParticularNews> {
+
+  // return the ScrollVoew with selected news
   Widget _get_particular_news(News news) {
     var now = new DateTime.now();
     var formatter = new DateFormat('yyyy-MM-dd');
@@ -151,6 +163,8 @@ class _ViewParticularNewsState extends State<ViewParticularNews> {
     );
   }
 
+
+  // iniialize the delete confirmation 
   final SweetSheet showDeleteConfirmDialog = SweetSheet();
 
   @override
@@ -160,14 +174,19 @@ class _ViewParticularNewsState extends State<ViewParticularNews> {
         centerTitle: true,
         title: Text(widget.news.headline.toUpperCase()),
         actions: <Widget>[
+
+          // show a pop-up menu with "Edit" and "Delete" options
           PopupMenuButton<String>(
             onSelected: (value) async {
               if (value.toLowerCase() == "edit") {
+
+                // navigate to update screen if user selected "edit" 
                 Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (_) => AddNews(news: widget.news)));
               } else if (value.toLowerCase() == "delete") {
+                // delete the news on confirmation
                 _deleteNews(widget.news.id, context, showDeleteConfirmDialog);
               } else {
                 print("invalid value");
@@ -175,6 +194,8 @@ class _ViewParticularNewsState extends State<ViewParticularNews> {
             },
             itemBuilder: (BuildContext context) {
               return {'Edit', 'Delete'}.map((String choice) {
+
+                // show the pop-menu at the right upper coner
                 return PopupMenuItem<String>(
                   value: choice,
                   child: Text((choice == "Edit") ? "📋 Edit" : "❌ Delete"),
@@ -184,17 +205,21 @@ class _ViewParticularNewsState extends State<ViewParticularNews> {
           ),
         ],
       ),
+      // call the function in the body segmentt
       body: _get_particular_news(widget.news),
     );
   }
 }
 
+// delete a particular news, Accepting news id, BuildContext, confirmation message as parameters.
 _deleteNews(String id, BuildContext context, SweetSheet showConfirmD) async {
   return await showConfirmD.show(
       context: context,
       description: Text("Are you sure you want to delete?"),
       color: SweetSheetColor.WARNING,
       positive: SweetSheetAction(title: "Confirm", onPressed: () async{
+
+        // delete a particular news by calling the delete news function
         await FireStoreServiceApi().delete_news(id);
         Toast.show("Successfully Deleted", context, duration: Toast.LENGTH_SHORT, gravity:  Toast.BOTTOM);
         Navigator.push(context, MaterialPageRoute(builder: (_) => FirstScreen()));
@@ -202,6 +227,8 @@ _deleteNews(String id, BuildContext context, SweetSheet showConfirmD) async {
       negative: SweetSheetAction(
           title: "Cancel",
           onPressed: () {
+
+            // do nothing on cancel
             Navigator.of(context).pop();
           }));
 }
